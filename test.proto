@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+import "google/protobuf/descriptor.proto";
+
+package trinsic.protoc.gen.json.test;
+
+extend google.protobuf.FieldOptions {
+  optional int32 int_option = 50000;
+  optional string string_option = 50001;
+  optional double double_option = 50002;
+  optional bytes bytes_option = 50003;
+}
+
+message Test {
+  message SubTest {
+    int64 sub_test_field = 1;
+  }
+
+  SubTest test_field = 1 [(int_option) = 1, (string_option) = "Hello, World!", (double_option) = 1.23456, (bytes_option) =  "!dlroW ,olleH"];
+}
