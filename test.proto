@@ -4,17 +4,62 @@ import "google/protobuf/descriptor.proto";
 
 package trinsic.protoc.gen.json.test;
 
+// Test of a field extension
 extend google.protobuf.FieldOptions {
-  optional int32 int_option = 50000;
-  optional string string_option = 50001;
-  optional double double_option = 50002;
-  optional bytes bytes_option = 50003;
+  optional bool bool_option = 50000;
 }
 
-message Test {
-  message SubTest {
-    int64 sub_test_field = 1;
+// Just a simple, hardworking enum
+enum TestEnum {
+  // Foo's value is 0. Foo indeed.
+  FOO = 0;
+  // Bar's value is 1. We don't like bar.
+  BAR = 1;
+}
+
+// A message which is referenced as the field type for
+// a field in another message
+message TestReferencedMessage {
+  // A string field
+  string test_string_field = 1;
+}
+
+// A message
+message TestMessage {
+  // A message which is defined in another message
+  message TestSubMessage {
+    // A field in a message which is defined in another message
+    // (...at the bottom of the sea)
+    int64 test_sub_field = 1;
   }
 
-  SubTest test_field = 1 [(int_option) = 1, (string_option) = "Hello, World!", (double_option) = 1.23456, (bytes_option) =  "!dlroW ,olleH"];
+  // A field with a type pointing to a message defined in another message.
+  // This field also has a custom field option set on it.
+  TestSubMessage test_sub_message_field = 1 [(bool_option) = false];
+
+  // A field with a type pointing to a message defined externally
+  TestReferencedMessage test_ref_field = 2;
+
+  // A field with a primitive type
+  int64 test_primitive_field = 3;
+
+  // A field with an enum type
+  TestEnum test_enum_field = 4;
+}
+
+
+// A message which is the input to a Method
+message TestInputMessage {
+  sint32 test_input_field = 1;
+}
+
+// A message which is the output of a Method
+message TestOutputMessage {
+  bool test_output_field = 2;
+}
+
+// A service
+service TestService {
+  // A method defined in a service
+  rpc TestMethod              (TestInputMessage)             returns (TestOutputMessage);
 }
