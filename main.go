@@ -62,7 +62,10 @@ func (p *plugin) Generate(req *plugin_go.CodeGeneratorRequest) (*plugin_go.CodeG
 	})
 
 	// Tell `protoc` that we support optional proto3 fields
-	*ret.SupportedFeatures |= uint64(pluginpb.CodeGeneratorResponse_FEATURE_PROTO3_OPTIONAL)
+	// We need to heap-allocate this so we can do pointer stuff because the response object
+	// has a pointer to a uint64 which might be nil (why??)
+	ret.SupportedFeatures = new(uint64)
+	*ret.SupportedFeatures = uint64(pluginpb.CodeGeneratorResponse_FEATURE_PROTO3_OPTIONAL)
 
 	return ret, nil
 }
