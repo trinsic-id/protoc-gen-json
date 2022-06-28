@@ -6,6 +6,7 @@ import (
 	plugin_go "github.com/golang/protobuf/protoc-gen-go/plugin"
 	"github.com/pseudomuto/protokit"
 	"google.golang.org/protobuf/proto"
+	"google.golang.org/protobuf/types/pluginpb"
 	"log"
 	"strings"
 )
@@ -59,6 +60,9 @@ func (p *plugin) Generate(req *plugin_go.CodeGeneratorRequest) (*plugin_go.CodeG
 		Name:    proto.String(filename),
 		Content: proto.String(buf.String()),
 	})
+
+	// Tell `protoc` that we support optional proto3 fields
+	*ret.SupportedFeatures |= uint64(pluginpb.CodeGeneratorResponse_FEATURE_PROTO3_OPTIONAL)
 
 	return ret, nil
 }
