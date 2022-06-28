@@ -60,8 +60,6 @@ func (p *plugin) Generate(req *plugin_go.CodeGeneratorRequest) (*plugin_go.CodeG
 		Name:    proto.String(filename),
 		Content: proto.String(buf.String()),
 	})
-	featureMask := uint64(pluginpb.CodeGeneratorResponse_FEATURE_PROTO3_OPTIONAL)
-	ret.SupportedFeatures = &featureMask
 
 	// Tell `protoc` that we support optional proto3 fields
 	// We need to heap-allocate this so we can do pointer stuff because the response object
