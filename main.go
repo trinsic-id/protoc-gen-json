@@ -112,6 +112,7 @@ func parseMessage(messageProto *protokit.Descriptor, context *Context, declFile 
 		Name:        messageProto.GetName(),
 		FullName:    GetFQN(messageProto.GetFullName()),
 		Description: messageProto.GetComments().String(),
+		IsMapEntry:  messageProto.Options.GetMapEntry(),
 
 		Fields:   make([]string, 0),
 		Messages: make([]string, 0),
