@@ -184,7 +184,7 @@ func (ctx *Context) StoreService(service *Service, serviceProto *protokit.Servic
 	ctx.Services[service.FullName] = service
 
 	entry := &IndexEntry{
-		Type:       "serviceProto",
+		Type:       "service",
 		Collection: "services",
 		File:       serviceProto.GetFile().GetName(),
 	}
@@ -197,7 +197,7 @@ func (ctx *Context) StoreMethod(method *Method, methodProto *protokit.MethodDesc
 	ctx.Methods[method.FullName] = method
 
 	entry := &IndexEntry{
-		Type:       "methodProto",
+		Type:       "method",
 		Collection: "methods",
 		File:       methodProto.GetFile().GetName(),
 	}
