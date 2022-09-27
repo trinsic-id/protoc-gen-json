@@ -31,7 +31,7 @@ extend google.protobuf.ServiceOptions {
 }
 
 extend google.protobuf.MethodOptions {
-  optional string method_option = 50000;
+  optional TestEnum method_option = 50000;
 }
 
 // Just a simple, hardworking enum
@@ -96,6 +96,6 @@ service TestService {
   // A method defined in a service
   rpc TestMethod              (TestInputMessage)             returns (TestOutputMessage) {
     option deprecated = true;
-    option (method_option) = "method option";
+    option (method_option) = FOO;
   }
 }

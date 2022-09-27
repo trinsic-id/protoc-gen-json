@@ -27,6 +27,8 @@ type IndexEntry struct {
 
 // File is a parsed protobuf file
 type File struct {
+	Descriptor *protokit.FileDescriptor `json:"-"`
+
 	Name        string                 `json:"name"`
 	Package     string                 `json:"package"`
 	Description string                 `json:"description"`
@@ -41,6 +43,8 @@ type File struct {
 
 // Service is a parsed service defined in a File
 type Service struct {
+	Descriptor *protokit.ServiceDescriptor `json:"-"`
+
 	Name        string                 `json:"name"`
 	FullName    string                 `json:"full_name"`
 	Description string                 `json:"description"`
@@ -50,6 +54,8 @@ type Service struct {
 
 // Method is a parsed service method
 type Method struct {
+	Descriptor *protokit.MethodDescriptor `json:"-"`
+
 	Name        string                 `json:"name"`
 	FullName    string                 `json:"full_name"`
 	InputType   string                 `json:"input_type"`
@@ -60,6 +66,8 @@ type Method struct {
 
 // Message is a parsed message defined in a file
 type Message struct {
+	Descriptor *protokit.Descriptor `json:"-"`
+
 	Name        string                 `json:"name"`
 	FullName    string                 `json:"full_name"`
 	Description string                 `json:"description"`
@@ -72,6 +80,8 @@ type Message struct {
 
 // Field is a parsed field defined in a Message
 type Field struct {
+	Descriptor *protokit.FieldDescriptor `json:"-"`
+
 	Name        string                 `json:"name"`
 	FullName    string                 `json:"full_name"`
 	Label       string                 `json:"label"`
@@ -82,6 +92,8 @@ type Field struct {
 }
 
 type Enum struct {
+	Descriptor *protokit.EnumDescriptor `json:"-"`
+
 	Name        string                 `json:"name"`
 	FullName    string                 `json:"full_name"`
 	Description string                 `json:"description"`
@@ -90,6 +102,8 @@ type Enum struct {
 }
 
 type EnumValue struct {
+	Descriptor *protokit.EnumValueDescriptor `json:"-"`
+
 	Name        string                 `json:"name"`
 	FullName    string                 `json:"full_name"`
 	Description string                 `json:"description"`

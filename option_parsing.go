@@ -41,9 +41,9 @@ func NewCustomOptions() *CustomOptions {
 	}
 }
 
-// parseAllOptions finds all custom options defined by any of `files` and returns
+// parseAllCustomOptionDefinitions finds all custom options defined by any of `files` and returns
 // a struct containing them
-func parseAllOptions(files []*protokit.FileDescriptor) *CustomOptions {
+func parseAllCustomOptionDefinitions(files []*protokit.FileDescriptor) *CustomOptions {
 	ret := NewCustomOptions()
 
 	//Loop through all extensions defined by all files
@@ -70,6 +70,32 @@ func parseAllOptions(files []*protokit.FileDescriptor) *CustomOptions {
 	}
 
 	return ret
+}
+
+// parseAllCustomOptionValues parses all the values of the custom options set on files/messages/fields/services/etc.
+// and updates `context` with the parsed values
+func parseAllCustomOptionValues(context *Context) {
+	for _, file := range context.Files {
+		file.Options = parseFileOptions(file.Descriptor, context)
+	}
+	for _, message := range context.Messages {
+		message.Options = parseMessageOptions(message.Descriptor, context)
+	}
+	for _, field := range context.Fields {
+		field.Options = parseFieldOptions(field.Descriptor, context)
+	}
+	for _, enum := range context.Enums {
+		enum.Options = parseEnumOptions(enum.Descriptor, context)
+	}
+	for _, enumVal := range context.EnumValues {
+		enumVal.Options = parseEnumValueOptions(enumVal.Descriptor, context)
+	}
+	for _, service := range context.Services {
+		service.Options = parseServiceOptions(service.Descriptor, context)
+	}
+	for _, method := range context.Methods {
+		method.Options = parseMethodOptions(method.Descriptor, context)
+	}
 }
 
 // parseCustomOption parses a custom option
@@ -177,7 +203,13 @@ func parseRawOptions(entityName string, raw protoreflect.RawFields, optionsDB *m
 		case descriptorpb.FieldDescriptorProto_TYPE_BYTES:
 			opt = bytesVal
 		case descriptorpb.FieldDescriptorProto_TYPE_ENUM:
-			opt = "TODO: PARSE ENUM"
+			opt = struct {
+				EnumType string `json:"enum_type"`
+				EnumVal  uint64 `json:"enum_value"`
+			}{
+				StripStartingPeriod(optionDef.TypeName),
+				uintVal,
+			}
 		case descriptorpb.FieldDescriptorProto_TYPE_SINT32,
 			descriptorpb.FieldDescriptorProto_TYPE_SINT64:
 			opt = protowire.DecodeZigZag(uintVal)
@@ -198,7 +230,7 @@ func parseRawOptions(entityName string, raw protoreflect.RawFields, optionsDB *m
  */
 
 // parseFileOptions parses options on a file,
-// mapping them to CustomOptions which were discovered during `parseAllOptions`
+// mapping them to CustomOptions which were discovered during `parseAllCustomOptionDefinitions`
 func parseFileOptions(file *protokit.FileDescriptor, context *Context) map[string]interface{} {
 	ret := make(map[string]interface{})
 
@@ -222,7 +254,7 @@ func parseFileOptions(file *protokit.FileDescriptor, context *Context) map[strin
 }
 
 // parseMessageOptions parses options on a message,
-// mapping them to CustomOptions which were discovered during `parseAllOptions`
+// mapping them to CustomOptions which were discovered during `parseAllCustomOptionDefinitions`
 func parseMessageOptions(message *protokit.Descriptor, context *Context) map[string]interface{} {
 	ret := make(map[string]interface{})
 
@@ -246,7 +278,7 @@ func parseMessageOptions(message *protokit.Descriptor, context *Context) map[str
 }
 
 // parseFieldOptions parses options on a field,
-// mapping them to CustomOptions which were discovered during `parseAllOptions`
+// mapping them to CustomOptions which were discovered during `parseAllCustomOptionDefinitions`
 func parseFieldOptions(field *protokit.FieldDescriptor, context *Context) map[string]interface{} {
 	ret := make(map[string]interface{})
 
@@ -270,7 +302,7 @@ func parseFieldOptions(field *protokit.FieldDescriptor, context *Context) map[st
 }
 
 // parseEnumOptions parses options on an enum,
-// mapping them to CustomOptions which were discovered during `parseAllOptions`
+// mapping them to CustomOptions which were discovered during `parseAllCustomOptionDefinitions`
 func parseEnumOptions(enum *protokit.EnumDescriptor, context *Context) map[string]interface{} {
 	ret := make(map[string]interface{})
 
@@ -294,7 +326,7 @@ func parseEnumOptions(enum *protokit.EnumDescriptor, context *Context) map[strin
 }
 
 // parseEnumValueOptions parses options on an enum value,
-// mapping them to CustomOptions which were discovered during `parseAllOptions`
+// mapping them to CustomOptions which were discovered during `parseAllCustomOptionDefinitions`
 func parseEnumValueOptions(enumVal *protokit.EnumValueDescriptor, context *Context) map[string]interface{} {
 	ret := make(map[string]interface{})
 
@@ -318,7 +350,7 @@ func parseEnumValueOptions(enumVal *protokit.EnumValueDescriptor, context *Conte
 }
 
 // parseServiceOptions parses options on a service,
-// mapping them to CustomOptions which were discovered during `parseAllOptions`
+// mapping them to CustomOptions which were discovered during `parseAllCustomOptionDefinitions`
 func parseServiceOptions(service *protokit.ServiceDescriptor, context *Context) map[string]interface{} {
 	ret := make(map[string]interface{})
 
@@ -342,7 +374,7 @@ func parseServiceOptions(service *protokit.ServiceDescriptor, context *Context) 
 }
 
 // parseMethodOptions parses options on a method,
-// mapping them to CustomOptions which were discovered during `parseAllOptions`
+// mapping them to CustomOptions which were discovered during `parseAllCustomOptionDefinitions`
 func parseMethodOptions(method *protokit.MethodDescriptor, context *Context) map[string]interface{} {
 	ret := make(map[string]interface{})
 

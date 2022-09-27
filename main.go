@@ -31,12 +31,17 @@ func (p *plugin) Generate(req *plugin_go.CodeGeneratorRequest) (*plugin_go.CodeG
 	descriptors := protokit.ParseCodeGenRequest(req)
 
 	// First parse out all custom options defined in all files
-	context.CustomOptions = parseAllOptions(descriptors)
+	context.CustomOptions = parseAllCustomOptionDefinitions(descriptors)
 
-	// Handle each file
+	// Then, parse everything defined in each file, EXCEPT for the custom options defined on resources
 	for _, d := range descriptors {
 		parseFile(d, context)
 	}
+
+	// Finally, parse all the custom options that were set on fields/etc.
+	// We have to do this step last because a custom option might be of a type that isn't defined until everything
+	// has been parsed
+	parseAllCustomOptionValues(context)
 
 	// Encode to JSON
 	buf := new(bytes.Buffer)
@@ -73,10 +78,11 @@ func (p *plugin) Generate(req *plugin_go.CodeGeneratorRequest) (*plugin_go.CodeG
 // parseFile parses a protobuf file and all its constituent parts
 func parseFile(fileProto *protokit.FileDescriptor, context *Context) {
 	file := &File{
+		Descriptor: fileProto,
+
 		Name:        fileProto.GetName(),
 		Package:     fileProto.GetPackage(),
 		Description: fileProto.GetPackageComments().String(),
-		Options:     parseFileOptions(fileProto, context),
 
 		Services:   make([]string, 0),
 		Methods:    make([]string, 0),
@@ -110,11 +116,11 @@ func parseFile(fileProto *protokit.FileDescriptor, context *Context) {
 // parseMessage parses a protobuf message and its fields
 func parseMessage(messageProto *protokit.Descriptor, context *Context, declFile *File, declMessage *Message) {
 	message := &Message{
+		Descriptor:  messageProto,
 		Name:        messageProto.GetName(),
 		FullName:    GetFQN(messageProto.GetFullName()),
 		Description: messageProto.GetComments().String(),
 		IsMapEntry:  messageProto.Options.GetMapEntry(),
-		Options:     parseMessageOptions(messageProto, context),
 
 		Fields:   make([]string, 0),
 		Messages: make([]string, 0),
@@ -172,13 +178,13 @@ func parseField(fieldProto *protokit.FieldDescriptor, context *Context, declFile
 	fqn := GetFQN(fieldProto.GetFullName())
 
 	field := &Field{
+		Descriptor:  fieldProto,
 		Name:        fieldProto.GetName(),
 		FullName:    fqn,
 		Label:       fieldProto.GetLabel().String(),
 		Type:        GetFQN(typeName),
 		FullType:    GetFQN(fullTypeName),
 		Description: fieldProto.GetComments().String(),
-		Options:     parseFieldOptions(fieldProto, context),
 	}
 
 	// Store fieldProto in declFile and declMessage
@@ -191,11 +197,11 @@ func parseField(fieldProto *protokit.FieldDescriptor, context *Context, declFile
 
 func parseEnum(enumProto *protokit.EnumDescriptor, context *Context, declFile *File, declMessage *Message) {
 	enum := &Enum{
+		Descriptor:  enumProto,
 		Name:        enumProto.GetName(),
 		FullName:    GetFQN(enumProto.GetFullName()),
 		Description: enumProto.GetComments().String(),
 		Values:      make([]string, 0),
-		Options:     parseEnumOptions(enumProto, context),
 	}
 
 	//Store enum in declFile.Enums and, if non-null, declMessage.Enums
@@ -214,11 +220,11 @@ func parseEnum(enumProto *protokit.EnumDescriptor, context *Context, declFile *F
 
 func parseEnumValue(enumValProto *protokit.EnumValueDescriptor, context *Context, declFile *File, declEnum *Enum) {
 	enumVal := &EnumValue{
+		Descriptor:  enumValProto,
 		Name:        enumValProto.GetName(),
 		FullName:    GetFQN(enumValProto.GetFullName()),
 		Description: enumValProto.GetComments().String(),
 		Value:       enumValProto.GetNumber(),
-		Options:     parseEnumValueOptions(enumValProto, context),
 	}
 
 	//Store enumVal in declFile.EnumValues and declEenum.Values
@@ -232,11 +238,11 @@ func parseEnumValue(enumValProto *protokit.EnumValueDescriptor, context *Context
 // parseService parses a service in a protobuf file, and its methods
 func parseService(serviceProto *protokit.ServiceDescriptor, context *Context, declFile *File) {
 	service := &Service{
+		Descriptor:  serviceProto,
 		Name:        serviceProto.GetName(),
 		FullName:    GetFQN(serviceProto.GetFullName()),
 		Description: serviceProto.GetComments().String(),
 		Methods:     make([]string, 0),
-		Options:     parseServiceOptions(serviceProto, context),
 	}
 
 	// Store service in declFile.Services
@@ -253,12 +259,12 @@ func parseService(serviceProto *protokit.ServiceDescriptor, context *Context, de
 // parseMethod parses a method in a service
 func parseMethod(methodProto *protokit.MethodDescriptor, context *Context, declFile *File, declService *Service) {
 	method := &Method{
+		Descriptor:  methodProto,
 		Name:        methodProto.GetName(),
 		FullName:    GetFQN(methodProto.GetFullName()),
 		InputType:   GetFQN(methodProto.GetInputType()),
 		OutputType:  GetFQN(methodProto.GetOutputType()),
 		Description: methodProto.GetComments().String(),
-		Options:     parseMethodOptions(methodProto, context),
 	}
 
 	//Store method in declFile.Methods and declService.Methods

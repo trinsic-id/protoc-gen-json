@@ -178,7 +178,10 @@
       "description": "A method defined in a service",
       "options": {
         "deprecated": true,
-        "trinsic.protoc.gen.json.test.method_option": "method option"
+        "trinsic.protoc.gen.json.test.method_option": {
+          "enum_type": "trinsic.protoc.gen.json.test.TestEnum",
+          "enum_value": 0
+        }
       }
     }
   },
