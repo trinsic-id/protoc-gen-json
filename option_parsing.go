@@ -4,13 +4,20 @@ import (
 	"fmt"
 	"github.com/pseudomuto/protokit"
 	"google.golang.org/protobuf/encoding/protowire"
+	"google.golang.org/protobuf/reflect/protoreflect"
 	"google.golang.org/protobuf/types/descriptorpb"
 	"math"
 )
 
 // CustomOptions stores all custom options defined by proto files being compiled
 type CustomOptions struct {
-	FieldOptions map[int32]*CustomOptionDef `json:"field_options"`
+	FileOptions      map[int32]*CustomOptionDef `json:"file_options"`
+	MessageOptions   map[int32]*CustomOptionDef `json:"message_options"`
+	FieldOptions     map[int32]*CustomOptionDef `json:"field_options"`
+	EnumOptions      map[int32]*CustomOptionDef `json:"enum_options"`
+	EnumValueOptions map[int32]*CustomOptionDef `json:"enum_value_options"`
+	ServiceOptions   map[int32]*CustomOptionDef `json:"service_options"`
+	MethodOptions    map[int32]*CustomOptionDef `json:"method_options"`
 }
 
 // CustomOptionDef is a custom option defined by a proto file
@@ -24,22 +31,40 @@ type CustomOptionDef struct {
 
 func NewCustomOptions() *CustomOptions {
 	return &CustomOptions{
-		FieldOptions: make(map[int32]*CustomOptionDef),
+		FileOptions:      make(map[int32]*CustomOptionDef),
+		MessageOptions:   make(map[int32]*CustomOptionDef),
+		FieldOptions:     make(map[int32]*CustomOptionDef),
+		EnumOptions:      make(map[int32]*CustomOptionDef),
+		EnumValueOptions: make(map[int32]*CustomOptionDef),
+		ServiceOptions:   make(map[int32]*CustomOptionDef),
+		MethodOptions:    make(map[int32]*CustomOptionDef),
 	}
 }
 
 // parseAllOptions finds all custom options defined by any of `files` and returns
 // a struct containing them
 func parseAllOptions(files []*protokit.FileDescriptor) *CustomOptions {
-	ret := &CustomOptions{FieldOptions: make(map[int32]*CustomOptionDef)}
+	ret := NewCustomOptions()
 
 	//Loop through all extensions defined by all files
 	for _, file := range files {
 		for _, ext := range file.GetExtensions() {
 			// To add support for message, file, etc. options, add a case statement here
 			switch ext.GetExtendee() {
+			case ".google.protobuf.FileOptions":
+				ret.FileOptions[ext.GetNumber()] = parseCustomOption(ext)
+			case ".google.protobuf.MessageOptions":
+				ret.MessageOptions[ext.GetNumber()] = parseCustomOption(ext)
 			case ".google.protobuf.FieldOptions":
 				ret.FieldOptions[ext.GetNumber()] = parseCustomOption(ext)
+			case ".google.protobuf.EnumOptions":
+				ret.EnumOptions[ext.GetNumber()] = parseCustomOption(ext)
+			case ".google.protobuf.EnumValueOptions":
+				ret.EnumValueOptions[ext.GetNumber()] = parseCustomOption(ext)
+			case ".google.protobuf.ServiceOptions":
+				ret.ServiceOptions[ext.GetNumber()] = parseCustomOption(ext)
+			case ".google.protobuf.MethodOptions":
+				ret.MethodOptions[ext.GetNumber()] = parseCustomOption(ext)
 			}
 		}
 	}
@@ -62,21 +87,8 @@ func parseCustomOption(ext *protokit.ExtensionDescriptor) *CustomOptionDef {
 	return ret
 }
 
-// parseFieldOptions parses options on a field,
-// mapping them to CustomOptions which were discovered during `parseAllOptions`
-func parseFieldOptions(field *protokit.FieldDescriptor, context *Context) map[string]interface{} {
+func parseRawOptions(entityName string, raw protoreflect.RawFields, optionsDB *map[int32]*CustomOptionDef) map[string]interface{} {
 	ret := make(map[string]interface{})
-
-	options := field.GetOptions()
-
-	// Handle some common pre-defined (non-custom) options
-	if options.GetDeprecated() {
-		ret["deprecated"] = true
-	}
-	// End handling pre-defined options
-
-	//`options` is a protobuf message -- custom options will be in its unknown fields
-	raw := options.ProtoReflect().GetUnknown()
 
 	size := len(raw)
 	consumed := 0
@@ -90,13 +102,13 @@ func parseFieldOptions(field *protokit.FieldDescriptor, context *Context) map[st
 		// Read tag
 		optionIndex, wireType, length := protowire.ConsumeTag(raw[consumed:])
 		if length < 0 {
-			fmt.Printf("FAILED PARSING OPTIONS FOR FIELD %s: %v", field.GetFullName(), raw)
+			fmt.Printf("FAILED PARSING OPTIONS FOR ENTITY %s: %v", entityName, raw)
 			return nil
 		}
 		consumed += length
 
 		// Find option
-		optionDef, found := context.CustomOptions.FieldOptions[int32(optionIndex)]
+		optionDef, found := (*optionsDB)[int32(optionIndex)]
 
 		if !found {
 			continue
@@ -172,6 +184,182 @@ func parseFieldOptions(field *protokit.FieldDescriptor, context *Context) map[st
 		}
 
 		ret[optionDef.FullName] = opt
+	}
+
+	return ret
+}
+
+/**
+ *
+ * Here be the consequence of Golang's type system
+ *
+ * May you look upon this and despair
+ *
+ */
+
+// parseFileOptions parses options on a file,
+// mapping them to CustomOptions which were discovered during `parseAllOptions`
+func parseFileOptions(file *protokit.FileDescriptor, context *Context) map[string]interface{} {
+	ret := make(map[string]interface{})
+
+	options := file.GetOptions()
+
+	// Handle some common pre-defined (non-custom) options
+	if options.GetDeprecated() {
+		ret["deprecated"] = true
+	}
+	// End handling pre-defined options
+
+	//`options` is a protobuf message -- custom options will be in its unknown fields
+	raw := options.ProtoReflect().GetUnknown()
+
+	// Parse the options from the raw bytes of the message and store them in ret
+	for k, v := range parseRawOptions(file.GetName(), raw, &context.CustomOptions.FileOptions) {
+		ret[k] = v
+	}
+
+	return ret
+}
+
+// parseMessageOptions parses options on a message,
+// mapping them to CustomOptions which were discovered during `parseAllOptions`
+func parseMessageOptions(message *protokit.Descriptor, context *Context) map[string]interface{} {
+	ret := make(map[string]interface{})
+
+	options := message.GetOptions()
+
+	// Handle some common pre-defined (non-custom) options
+	if options.GetDeprecated() {
+		ret["deprecated"] = true
+	}
+	// End handling pre-defined options
+
+	//`options` is a protobuf message -- custom options will be in its unknown fields
+	raw := options.ProtoReflect().GetUnknown()
+
+	// Parse the options from the raw bytes of the message and store them in ret
+	for k, v := range parseRawOptions(message.GetFullName(), raw, &context.CustomOptions.MessageOptions) {
+		ret[k] = v
+	}
+
+	return ret
+}
+
+// parseFieldOptions parses options on a field,
+// mapping them to CustomOptions which were discovered during `parseAllOptions`
+func parseFieldOptions(field *protokit.FieldDescriptor, context *Context) map[string]interface{} {
+	ret := make(map[string]interface{})
+
+	options := field.GetOptions()
+
+	// Handle some common pre-defined (non-custom) options
+	if options.GetDeprecated() {
+		ret["deprecated"] = true
+	}
+	// End handling pre-defined options
+
+	//`options` is a protobuf message -- custom options will be in its unknown fields
+	raw := options.ProtoReflect().GetUnknown()
+
+	// Parse the options from the raw bytes of the message and store them in ret
+	for k, v := range parseRawOptions(field.GetFullName(), raw, &context.CustomOptions.FieldOptions) {
+		ret[k] = v
+	}
+
+	return ret
+}
+
+// parseEnumOptions parses options on an enum,
+// mapping them to CustomOptions which were discovered during `parseAllOptions`
+func parseEnumOptions(enum *protokit.EnumDescriptor, context *Context) map[string]interface{} {
+	ret := make(map[string]interface{})
+
+	options := enum.GetOptions()
+
+	// Handle some common pre-defined (non-custom) options
+	if options.GetDeprecated() {
+		ret["deprecated"] = true
+	}
+	// End handling pre-defined options
+
+	//`options` is a protobuf message -- custom options will be in its unknown fields
+	raw := options.ProtoReflect().GetUnknown()
+
+	// Parse the options from the raw bytes of the message and store them in ret
+	for k, v := range parseRawOptions(enum.GetFullName(), raw, &context.CustomOptions.EnumOptions) {
+		ret[k] = v
+	}
+
+	return ret
+}
+
+// parseEnumValueOptions parses options on an enum value,
+// mapping them to CustomOptions which were discovered during `parseAllOptions`
+func parseEnumValueOptions(enumVal *protokit.EnumValueDescriptor, context *Context) map[string]interface{} {
+	ret := make(map[string]interface{})
+
+	options := enumVal.GetOptions()
+
+	// Handle some common pre-defined (non-custom) options
+	if options.GetDeprecated() {
+		ret["deprecated"] = true
+	}
+	// End handling pre-defined options
+
+	//`options` is a protobuf message -- custom options will be in its unknown fields
+	raw := options.ProtoReflect().GetUnknown()
+
+	// Parse the options from the raw bytes of the message and store them in ret
+	for k, v := range parseRawOptions(enumVal.GetFullName(), raw, &context.CustomOptions.EnumValueOptions) {
+		ret[k] = v
+	}
+
+	return ret
+}
+
+// parseServiceOptions parses options on a service,
+// mapping them to CustomOptions which were discovered during `parseAllOptions`
+func parseServiceOptions(service *protokit.ServiceDescriptor, context *Context) map[string]interface{} {
+	ret := make(map[string]interface{})
+
+	options := service.GetOptions()
+
+	// Handle some common pre-defined (non-custom) options
+	if options.GetDeprecated() {
+		ret["deprecated"] = true
+	}
+	// End handling pre-defined options
+
+	//`options` is a protobuf message -- custom options will be in its unknown fields
+	raw := options.ProtoReflect().GetUnknown()
+
+	// Parse the options from the raw bytes of the message and store them in ret
+	for k, v := range parseRawOptions(service.GetFullName(), raw, &context.CustomOptions.ServiceOptions) {
+		ret[k] = v
+	}
+
+	return ret
+}
+
+// parseMethodOptions parses options on a method,
+// mapping them to CustomOptions which were discovered during `parseAllOptions`
+func parseMethodOptions(method *protokit.MethodDescriptor, context *Context) map[string]interface{} {
+	ret := make(map[string]interface{})
+
+	options := method.GetOptions()
+
+	// Handle some common pre-defined (non-custom) options
+	if options.GetDeprecated() {
+		ret["deprecated"] = true
+	}
+	// End handling pre-defined options
+
+	//`options` is a protobuf message -- custom options will be in its unknown fields
+	raw := options.ProtoReflect().GetUnknown()
+
+	// Parse the options from the raw bytes of the message and store them in ret
+	for k, v := range parseRawOptions(method.GetFullName(), raw, &context.CustomOptions.MethodOptions) {
+		ret[k] = v
 	}
 
 	return ret

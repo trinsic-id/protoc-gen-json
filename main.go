@@ -76,6 +76,7 @@ func parseFile(fileProto *protokit.FileDescriptor, context *Context) {
 		Name:        fileProto.GetName(),
 		Package:     fileProto.GetPackage(),
 		Description: fileProto.GetPackageComments().String(),
+		Options:     parseFileOptions(fileProto, context),
 
 		Services:   make([]string, 0),
 		Methods:    make([]string, 0),
@@ -113,6 +114,7 @@ func parseMessage(messageProto *protokit.Descriptor, context *Context, declFile 
 		FullName:    GetFQN(messageProto.GetFullName()),
 		Description: messageProto.GetComments().String(),
 		IsMapEntry:  messageProto.Options.GetMapEntry(),
+		Options:     parseMessageOptions(messageProto, context),
 
 		Fields:   make([]string, 0),
 		Messages: make([]string, 0),
@@ -193,6 +195,7 @@ func parseEnum(enumProto *protokit.EnumDescriptor, context *Context, declFile *F
 		FullName:    GetFQN(enumProto.GetFullName()),
 		Description: enumProto.GetComments().String(),
 		Values:      make([]string, 0),
+		Options:     parseEnumOptions(enumProto, context),
 	}
 
 	//Store enum in declFile.Enums and, if non-null, declMessage.Enums
@@ -215,6 +218,7 @@ func parseEnumValue(enumValProto *protokit.EnumValueDescriptor, context *Context
 		FullName:    GetFQN(enumValProto.GetFullName()),
 		Description: enumValProto.GetComments().String(),
 		Value:       enumValProto.GetNumber(),
+		Options:     parseEnumValueOptions(enumValProto, context),
 	}
 
 	//Store enumVal in declFile.EnumValues and declEenum.Values
@@ -232,6 +236,7 @@ func parseService(serviceProto *protokit.ServiceDescriptor, context *Context, de
 		FullName:    GetFQN(serviceProto.GetFullName()),
 		Description: serviceProto.GetComments().String(),
 		Methods:     make([]string, 0),
+		Options:     parseServiceOptions(serviceProto, context),
 	}
 
 	// Store service in declFile.Services
@@ -253,6 +258,7 @@ func parseMethod(methodProto *protokit.MethodDescriptor, context *Context, declF
 		InputType:   GetFQN(methodProto.GetInputType()),
 		OutputType:  GetFQN(methodProto.GetOutputType()),
 		Description: methodProto.GetComments().String(),
+		Options:     parseMethodOptions(methodProto, context),
 	}
 
 	//Store method in declFile.Methods and declService.Methods

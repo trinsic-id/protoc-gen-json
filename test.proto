@@ -4,15 +4,42 @@ import "google/protobuf/descriptor.proto";
 
 package trinsic.protoc.gen.json.test;
 
-// Test of a field extension
+option (file_option) = "file option";
+
+extend google.protobuf.FileOptions {
+  optional string file_option = 50000;
+}
+
+extend google.protobuf.MessageOptions {
+  optional string message_option = 50000;
+}
+
 extend google.protobuf.FieldOptions {
-  optional bool bool_option = 50000;
+  optional string field_option = 50000;
+}
+
+extend google.protobuf.EnumOptions {
+  optional string enum_option = 50000;
+}
+
+extend google.protobuf.EnumValueOptions {
+  optional string enum_value_option = 50000;
+}
+
+extend google.protobuf.ServiceOptions {
+  optional string service_option = 50000;
+}
+
+extend google.protobuf.MethodOptions {
+  optional string method_option = 50000;
 }
 
 // Just a simple, hardworking enum
 enum TestEnum {
+  option (enum_option) = "enum option";
+
   // Foo's value is 0. Foo indeed.
-  FOO = 0;
+  FOO = 0 [(enum_value_option) = "enum value option"];
   // Bar's value is 1. We don't like bar.
   BAR = 1;
 }
@@ -20,6 +47,8 @@ enum TestEnum {
 // A message which is referenced as the field type for
 // a field in another message
 message TestReferencedMessage {
+  option (message_option) = "message option";
+
   // A string field
   string test_string_field = 1;
   // Optional field
@@ -37,7 +66,7 @@ message TestMessage {
 
   // A field with a type pointing to a message defined in another message.
   // This field also has a custom field option set on it.
-  TestSubMessage test_sub_message_field = 1 [(bool_option) = false];
+  TestSubMessage test_sub_message_field = 1 [(field_option) = "field option"];
 
   // A field with a type pointing to a message defined externally
   TestReferencedMessage test_ref_field = 2;
@@ -62,6 +91,11 @@ message TestOutputMessage {
 
 // A service
 service TestService {
+  option (service_option) = "service option";
+
   // A method defined in a service
-  rpc TestMethod              (TestInputMessage)             returns (TestOutputMessage);
+  rpc TestMethod              (TestInputMessage)             returns (TestOutputMessage) {
+    option deprecated = true;
+    option (method_option) = "method option";
+  }
 }

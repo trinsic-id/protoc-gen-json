@@ -27,43 +27,47 @@ type IndexEntry struct {
 
 // File is a parsed protobuf file
 type File struct {
-	Name        string   `json:"name"`
-	Package     string   `json:"package"`
-	Description string   `json:"description"`
-	Services    []string `json:"services"`
-	Methods     []string `json:"methods"`
-	Messages    []string `json:"messages"`
-	Fields      []string `json:"fields"`
-	Enums       []string `json:"enums"`
-	EnumValues  []string `json:"enum_values"`
+	Name        string                 `json:"name"`
+	Package     string                 `json:"package"`
+	Description string                 `json:"description"`
+	Options     map[string]interface{} `json:"options,omitempty"`
+	Services    []string               `json:"services"`
+	Methods     []string               `json:"methods"`
+	Messages    []string               `json:"messages"`
+	Fields      []string               `json:"fields"`
+	Enums       []string               `json:"enums"`
+	EnumValues  []string               `json:"enum_values"`
 }
 
 // Service is a parsed service defined in a File
 type Service struct {
-	Name        string   `json:"name"`
-	FullName    string   `json:"full_name"`
-	Description string   `json:"description"`
-	Methods     []string `json:"methods"`
+	Name        string                 `json:"name"`
+	FullName    string                 `json:"full_name"`
+	Description string                 `json:"description"`
+	Methods     []string               `json:"methods"`
+	Options     map[string]interface{} `json:"options,omitempty"`
 }
 
 // Method is a parsed service method
 type Method struct {
-	Name        string `json:"name"`
-	FullName    string `json:"full_name"`
-	InputType   string `json:"input_type"`
-	OutputType  string `json:"output_type"`
-	Description string `json:"description"`
+	Name        string                 `json:"name"`
+	FullName    string                 `json:"full_name"`
+	InputType   string                 `json:"input_type"`
+	OutputType  string                 `json:"output_type"`
+	Description string                 `json:"description"`
+	Options     map[string]interface{} `json:"options,omitempty"`
 }
 
 // Message is a parsed message defined in a file
 type Message struct {
-	Name        string   `json:"name"`
-	FullName    string   `json:"full_name"`
-	Description string   `json:"description"`
-	IsMapEntry  bool     `json:"is_map_entry,omitempty"`
-	Fields      []string `json:"fields"`
-	Messages    []string `json:"messages"`
-	Enums       []string `json:"enums"`
+	Name        string                 `json:"name"`
+	FullName    string                 `json:"full_name"`
+	Description string                 `json:"description"`
+	IsMapEntry  bool                   `json:"is_map_entry,omitempty"`
+	Options     map[string]interface{} `json:"options,omitempty"`
+	Fields      []string               `json:"fields"`
+	Messages    []string               `json:"messages"`
+	Enums       []string               `json:"enums"`
 }
 
 // Field is a parsed field defined in a Message
@@ -78,17 +82,19 @@ type Field struct {
 }
 
 type Enum struct {
-	Name        string   `json:"name"`
-	FullName    string   `json:"full_name"`
-	Description string   `json:"description"`
-	Values      []string `json:"values"`
+	Name        string                 `json:"name"`
+	FullName    string                 `json:"full_name"`
+	Description string                 `json:"description"`
+	Values      []string               `json:"values"`
+	Options     map[string]interface{} `json:"options,omitempty"`
 }
 
 type EnumValue struct {
-	Name        string `json:"name"`
-	FullName    string `json:"full_name"`
-	Description string `json:"description"`
-	Value       int32  `json:"value"`
+	Name        string                 `json:"name"`
+	FullName    string                 `json:"full_name"`
+	Description string                 `json:"description"`
+	Value       int32                  `json:"value"`
+	Options     map[string]interface{} `json:"options,omitempty"`
 }
 
 func NewContext() *Context {

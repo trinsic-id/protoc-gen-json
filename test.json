@@ -1,0 +1,354 @@
+{
+  "index": {
+    "trinsic.protoc.gen.json.test.TestEnum": {
+      "type": "enum",
+      "collection": "enums",
+      "file": "test.proto",
+      "parent": ""
+    },
+    "trinsic.protoc.gen.json.test.TestEnum.BAR": {
+      "type": "enum_value",
+      "collection": "enum_values",
+      "file": "test.proto",
+      "parent": "trinsic.protoc.gen.json.test.TestEnum"
+    },
+    "trinsic.protoc.gen.json.test.TestEnum.FOO": {
+      "type": "enum_value",
+      "collection": "enum_values",
+      "file": "test.proto",
+      "parent": "trinsic.protoc.gen.json.test.TestEnum"
+    },
+    "trinsic.protoc.gen.json.test.TestInputMessage": {
+      "type": "message",
+      "collection": "messages",
+      "file": "test.proto",
+      "parent": ""
+    },
+    "trinsic.protoc.gen.json.test.TestInputMessage.test_input_field": {
+      "type": "field",
+      "collection": "fields",
+      "file": "test.proto",
+      "parent": "trinsic.protoc.gen.json.test.TestInputMessage"
+    },
+    "trinsic.protoc.gen.json.test.TestMessage": {
+      "type": "message",
+      "collection": "messages",
+      "file": "test.proto",
+      "parent": ""
+    },
+    "trinsic.protoc.gen.json.test.TestMessage.TestSubMessage": {
+      "type": "message",
+      "collection": "messages",
+      "file": "test.proto",
+      "parent": "trinsic.protoc.gen.json.test.TestMessage"
+    },
+    "trinsic.protoc.gen.json.test.TestMessage.TestSubMessage.test_sub_field": {
+      "type": "field",
+      "collection": "fields",
+      "file": "test.proto",
+      "parent": "trinsic.protoc.gen.json.test.TestMessage.TestSubMessage"
+    },
+    "trinsic.protoc.gen.json.test.TestMessage.test_enum_field": {
+      "type": "field",
+      "collection": "fields",
+      "file": "test.proto",
+      "parent": "trinsic.protoc.gen.json.test.TestMessage"
+    },
+    "trinsic.protoc.gen.json.test.TestMessage.test_primitive_field": {
+      "type": "field",
+      "collection": "fields",
+      "file": "test.proto",
+      "parent": "trinsic.protoc.gen.json.test.TestMessage"
+    },
+    "trinsic.protoc.gen.json.test.TestMessage.test_ref_field": {
+      "type": "field",
+      "collection": "fields",
+      "file": "test.proto",
+      "parent": "trinsic.protoc.gen.json.test.TestMessage"
+    },
+    "trinsic.protoc.gen.json.test.TestMessage.test_sub_message_field": {
+      "type": "field",
+      "collection": "fields",
+      "file": "test.proto",
+      "parent": "trinsic.protoc.gen.json.test.TestMessage"
+    },
+    "trinsic.protoc.gen.json.test.TestOutputMessage": {
+      "type": "message",
+      "collection": "messages",
+      "file": "test.proto",
+      "parent": ""
+    },
+    "trinsic.protoc.gen.json.test.TestOutputMessage.test_output_field": {
+      "type": "field",
+      "collection": "fields",
+      "file": "test.proto",
+      "parent": "trinsic.protoc.gen.json.test.TestOutputMessage"
+    },
+    "trinsic.protoc.gen.json.test.TestReferencedMessage": {
+      "type": "message",
+      "collection": "messages",
+      "file": "test.proto",
+      "parent": ""
+    },
+    "trinsic.protoc.gen.json.test.TestReferencedMessage.test_optional_field": {
+      "type": "field",
+      "collection": "fields",
+      "file": "test.proto",
+      "parent": "trinsic.protoc.gen.json.test.TestReferencedMessage"
+    },
+    "trinsic.protoc.gen.json.test.TestReferencedMessage.test_string_field": {
+      "type": "field",
+      "collection": "fields",
+      "file": "test.proto",
+      "parent": "trinsic.protoc.gen.json.test.TestReferencedMessage"
+    },
+    "trinsic.protoc.gen.json.test.TestService": {
+      "type": "service",
+      "collection": "services",
+      "file": "test.proto",
+      "parent": ""
+    },
+    "trinsic.protoc.gen.json.test.TestService.TestMethod": {
+      "type": "method",
+      "collection": "methods",
+      "file": "test.proto",
+      "parent": ""
+    }
+  },
+  "files": {
+    "test.proto": {
+      "name": "test.proto",
+      "package": "trinsic.protoc.gen.json.test",
+      "description": "",
+      "options": {
+        "trinsic.protoc.gen.json.test.file_option": "file option"
+      },
+      "services": [
+        "trinsic.protoc.gen.json.test.TestService"
+      ],
+      "methods": [
+        "trinsic.protoc.gen.json.test.TestService.TestMethod"
+      ],
+      "messages": [
+        "trinsic.protoc.gen.json.test.TestReferencedMessage",
+        "trinsic.protoc.gen.json.test.TestMessage",
+        "trinsic.protoc.gen.json.test.TestMessage.TestSubMessage",
+        "trinsic.protoc.gen.json.test.TestInputMessage",
+        "trinsic.protoc.gen.json.test.TestOutputMessage"
+      ],
+      "fields": [
+        "trinsic.protoc.gen.json.test.TestReferencedMessage.test_string_field",
+        "trinsic.protoc.gen.json.test.TestReferencedMessage.test_optional_field",
+        "trinsic.protoc.gen.json.test.TestMessage.test_sub_message_field",
+        "trinsic.protoc.gen.json.test.TestMessage.test_ref_field",
+        "trinsic.protoc.gen.json.test.TestMessage.test_primitive_field",
+        "trinsic.protoc.gen.json.test.TestMessage.test_enum_field",
+        "trinsic.protoc.gen.json.test.TestMessage.TestSubMessage.test_sub_field",
+        "trinsic.protoc.gen.json.test.TestInputMessage.test_input_field",
+        "trinsic.protoc.gen.json.test.TestOutputMessage.test_output_field"
+      ],
+      "enums": [
+        "trinsic.protoc.gen.json.test.TestEnum"
+      ],
+      "enum_values": [
+        "trinsic.protoc.gen.json.test.TestEnum.FOO",
+        "trinsic.protoc.gen.json.test.TestEnum.BAR"
+      ]
+    }
+  },
+  "services": {
+    "trinsic.protoc.gen.json.test.TestService": {
+      "name": "TestService",
+      "full_name": "trinsic.protoc.gen.json.test.TestService",
+      "description": "A service",
+      "methods": [
+        "trinsic.protoc.gen.json.test.TestService.TestMethod"
+      ],
+      "options": {
+        "trinsic.protoc.gen.json.test.service_option": "service option"
+      }
+    }
+  },
+  "methods": {
+    "trinsic.protoc.gen.json.test.TestService.TestMethod": {
+      "name": "TestMethod",
+      "full_name": "trinsic.protoc.gen.json.test.TestService.TestMethod",
+      "input_type": "trinsic.protoc.gen.json.test.TestInputMessage",
+      "output_type": "trinsic.protoc.gen.json.test.TestOutputMessage",
+      "description": "A method defined in a service",
+      "options": {
+        "deprecated": true,
+        "trinsic.protoc.gen.json.test.method_option": "method option"
+      }
+    }
+  },
+  "messages": {
+    "trinsic.protoc.gen.json.test.TestInputMessage": {
+      "name": "TestInputMessage",
+      "full_name": "trinsic.protoc.gen.json.test.TestInputMessage",
+      "description": "A message which is the input to a Method",
+      "fields": [
+        "trinsic.protoc.gen.json.test.TestInputMessage.test_input_field"
+      ],
+      "messages": [],
+      "enums": []
+    },
+    "trinsic.protoc.gen.json.test.TestMessage": {
+      "name": "TestMessage",
+      "full_name": "trinsic.protoc.gen.json.test.TestMessage",
+      "description": "A message",
+      "fields": [
+        "trinsic.protoc.gen.json.test.TestMessage.test_sub_message_field",
+        "trinsic.protoc.gen.json.test.TestMessage.test_ref_field",
+        "trinsic.protoc.gen.json.test.TestMessage.test_primitive_field",
+        "trinsic.protoc.gen.json.test.TestMessage.test_enum_field"
+      ],
+      "messages": [
+        "trinsic.protoc.gen.json.test.TestMessage.TestSubMessage"
+      ],
+      "enums": []
+    },
+    "trinsic.protoc.gen.json.test.TestMessage.TestSubMessage": {
+      "name": "TestSubMessage",
+      "full_name": "trinsic.protoc.gen.json.test.TestMessage.TestSubMessage",
+      "description": "A message which is defined in another message",
+      "fields": [
+        "trinsic.protoc.gen.json.test.TestMessage.TestSubMessage.test_sub_field"
+      ],
+      "messages": [],
+      "enums": []
+    },
+    "trinsic.protoc.gen.json.test.TestOutputMessage": {
+      "name": "TestOutputMessage",
+      "full_name": "trinsic.protoc.gen.json.test.TestOutputMessage",
+      "description": "A message which is the output of a Method",
+      "fields": [
+        "trinsic.protoc.gen.json.test.TestOutputMessage.test_output_field"
+      ],
+      "messages": [],
+      "enums": []
+    },
+    "trinsic.protoc.gen.json.test.TestReferencedMessage": {
+      "name": "TestReferencedMessage",
+      "full_name": "trinsic.protoc.gen.json.test.TestReferencedMessage",
+      "description": "A message which is referenced as the field type for\na field in another message",
+      "options": {
+        "trinsic.protoc.gen.json.test.message_option": "message option"
+      },
+      "fields": [
+        "trinsic.protoc.gen.json.test.TestReferencedMessage.test_string_field",
+        "trinsic.protoc.gen.json.test.TestReferencedMessage.test_optional_field"
+      ],
+      "messages": [],
+      "enums": []
+    }
+  },
+  "fields": {
+    "trinsic.protoc.gen.json.test.TestInputMessage.test_input_field": {
+      "name": "test_input_field",
+      "full_name": "trinsic.protoc.gen.json.test.TestInputMessage.test_input_field",
+      "label": "LABEL_OPTIONAL",
+      "type": "sint32",
+      "full_type": "sint32",
+      "description": ""
+    },
+    "trinsic.protoc.gen.json.test.TestMessage.TestSubMessage.test_sub_field": {
+      "name": "test_sub_field",
+      "full_name": "trinsic.protoc.gen.json.test.TestMessage.TestSubMessage.test_sub_field",
+      "label": "LABEL_OPTIONAL",
+      "type": "int64",
+      "full_type": "int64",
+      "description": "A field in a message which is defined in another message\n(...at the bottom of the sea)"
+    },
+    "trinsic.protoc.gen.json.test.TestMessage.test_enum_field": {
+      "name": "test_enum_field",
+      "full_name": "trinsic.protoc.gen.json.test.TestMessage.test_enum_field",
+      "label": "LABEL_OPTIONAL",
+      "type": "TestEnum",
+      "full_type": "trinsic.protoc.gen.json.test.TestEnum",
+      "description": "A field with an enum type"
+    },
+    "trinsic.protoc.gen.json.test.TestMessage.test_primitive_field": {
+      "name": "test_primitive_field",
+      "full_name": "trinsic.protoc.gen.json.test.TestMessage.test_primitive_field",
+      "label": "LABEL_OPTIONAL",
+      "type": "int64",
+      "full_type": "int64",
+      "description": "A field with a primitive type"
+    },
+    "trinsic.protoc.gen.json.test.TestMessage.test_ref_field": {
+      "name": "test_ref_field",
+      "full_name": "trinsic.protoc.gen.json.test.TestMessage.test_ref_field",
+      "label": "LABEL_OPTIONAL",
+      "type": "TestReferencedMessage",
+      "full_type": "trinsic.protoc.gen.json.test.TestReferencedMessage",
+      "description": "A field with a type pointing to a message defined externally"
+    },
+    "trinsic.protoc.gen.json.test.TestMessage.test_sub_message_field": {
+      "name": "test_sub_message_field",
+      "full_name": "trinsic.protoc.gen.json.test.TestMessage.test_sub_message_field",
+      "label": "LABEL_OPTIONAL",
+      "type": "TestSubMessage",
+      "full_type": "trinsic.protoc.gen.json.test.TestMessage.TestSubMessage",
+      "description": "A field with a type pointing to a message defined in another message.\nThis field also has a custom field option set on it.",
+      "options": {
+        "trinsic.protoc.gen.json.test.field_option": "field option"
+      }
+    },
+    "trinsic.protoc.gen.json.test.TestOutputMessage.test_output_field": {
+      "name": "test_output_field",
+      "full_name": "trinsic.protoc.gen.json.test.TestOutputMessage.test_output_field",
+      "label": "LABEL_OPTIONAL",
+      "type": "bool",
+      "full_type": "bool",
+      "description": ""
+    },
+    "trinsic.protoc.gen.json.test.TestReferencedMessage.test_optional_field": {
+      "name": "test_optional_field",
+      "full_name": "trinsic.protoc.gen.json.test.TestReferencedMessage.test_optional_field",
+      "label": "LABEL_OPTIONAL",
+      "type": "string",
+      "full_type": "string",
+      "description": "Optional field"
+    },
+    "trinsic.protoc.gen.json.test.TestReferencedMessage.test_string_field": {
+      "name": "test_string_field",
+      "full_name": "trinsic.protoc.gen.json.test.TestReferencedMessage.test_string_field",
+      "label": "LABEL_OPTIONAL",
+      "type": "string",
+      "full_type": "string",
+      "description": "A string field"
+    }
+  },
+  "enums": {
+    "trinsic.protoc.gen.json.test.TestEnum": {
+      "name": "TestEnum",
+      "full_name": "trinsic.protoc.gen.json.test.TestEnum",
+      "description": "Just a simple, hardworking enum",
+      "values": [
+        "trinsic.protoc.gen.json.test.TestEnum.FOO",
+        "trinsic.protoc.gen.json.test.TestEnum.BAR"
+      ],
+      "options": {
+        "trinsic.protoc.gen.json.test.enum_option": "enum option"
+      }
+    }
+  },
+  "enum_values": {
+    "trinsic.protoc.gen.json.test.TestEnum.BAR": {
+      "name": "BAR",
+      "full_name": "trinsic.protoc.gen.json.test.TestEnum.BAR",
+      "description": "Bar's value is 1. We don't like bar.",
+      "value": 1
+    },
+    "trinsic.protoc.gen.json.test.TestEnum.FOO": {
+      "name": "FOO",
+      "full_name": "trinsic.protoc.gen.json.test.TestEnum.FOO",
+      "description": "Foo's value is 0. Foo indeed.",
+      "value": 0,
+      "options": {
+        "trinsic.protoc.gen.json.test.enum_value_option": "enum value option"
+      }
+    }
+  }
+}
