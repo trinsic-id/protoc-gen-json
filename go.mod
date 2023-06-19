@@ -3,7 +3,7 @@ module github.com/trinsic-id/protoc-gen-json
 go 1.19
 
 require (
-	github.com/golang/protobuf v1.5.2
+	github.com/golang/protobuf v1.5.3
 	github.com/pseudomuto/protokit v0.2.1
 )
 
